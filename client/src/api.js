@@ -1,0 +1,3 @@
+const API=import.meta.env.VITE_API_URL||'/api';
+async function request(path,opt={}){const h=new Headers(opt.headers||{}),t=localStorage.getItem('tcc_token');if(!(opt.body instanceof FormData))h.set('Content-Type','application/json');if(t)h.set('Authorization',`Bearer ${t}`);const r=await fetch(API+path,{...opt,headers:h});const text=await r.text();let d={};try{d=text?JSON.parse(text):{}}catch{d={message:text}}if(!r.ok)throw Error(d.message||'Request failed');return d}
+export const api={get:p=>request(p),post:(p,b)=>request(p,{method:'POST',body:b instanceof FormData?b:JSON.stringify(b)}),put:(p,b)=>request(p,{method:'PUT',body:JSON.stringify(b)}),upload:(p,b)=>request(p,{method:'POST',body:b})};
